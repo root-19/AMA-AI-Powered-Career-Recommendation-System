@@ -90,7 +90,7 @@
                             // All steps completed, check if recommendations are ready
                             checkRecommendations();
                         }
-                    }, 1500);
+                    }, 800);
                 }
             }
 
@@ -102,8 +102,8 @@
                         if (data.ready) {
                             window.location.href = '/recommendations';
                         } else {
-                            // If not ready, wait and check again
-                            setTimeout(checkRecommendations, 1000);
+                            // If not ready, wait and check again with exponential backoff
+                            setTimeout(checkRecommendations, 2000);
                         }
                     })
                     .catch(error => {
@@ -113,8 +113,8 @@
                     });
             }
 
-            // Start processing
-            setTimeout(processStep, 1000);
+            // Start processing immediately
+            processStep();
         });
     </script>
 </body>

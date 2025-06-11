@@ -454,3 +454,33 @@ User login attempt result: Array
     [role] => user
 )
 
+Admin login attempt result: Array
+(
+    [success] => 
+)
+
+User login attempt result: Array
+(
+    [success] => 
+)
+
+Admin login attempt result: Array
+(
+    [success] => 
+)
+
+User login attempt result: Array
+(
+    [success] => 
+)
+
+Admin login attempt result: Array
+(
+    [success] => 
+)
+
+User login attempt result: Array
+(
+    [success] => 
+)
+

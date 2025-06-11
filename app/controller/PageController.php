@@ -3,7 +3,7 @@
 namespace root_dev\Controller;
 
 class PageController {
-    private $apiKey = ''; // Replace with your DeepSeek API key
+    private $apiKey = 'sk-a05081075c064ce8a6f669e09535ca6c'; // Replace with your DeepSeek API key
     private $apiUrl = 'https://api.deepseek.com/v1/chat/completions';
 
     public function showProcessing() {
@@ -21,11 +21,21 @@ class PageController {
             exit();
         }
 
+        // Check if recommendations are already generated
+        if (isset($_SESSION['recommendations']) && isset($_SESSION['recommendations_timestamp'])) {
+            // If recommendations are less than 5 minutes old, use cached version
+            if (time() - $_SESSION['recommendations_timestamp'] < 300) {
+                header('Location: /recommendations');
+                exit();
+            }
+        }
+
         // Generate recommendations using DeepSeek
         $recommendations = $this->generateRecommendations($profile);
         
-        // Always store recommendations in session, even if there's an error
+        // Store recommendations in session with timestamp
         $_SESSION['recommendations'] = $recommendations;
+        $_SESSION['recommendations_timestamp'] = time();
         
         // Display the processing page
         require_once __DIR__ . '/../views/processing.php';
@@ -34,11 +44,15 @@ class PageController {
     public function checkRecommendations() {
         header('Content-Type: application/json');
         
-        if (isset($_SESSION['recommendations'])) {
-            echo json_encode(['ready' => true]);
-        } else {
-            echo json_encode(['ready' => false]);
+        if (isset($_SESSION['recommendations']) && isset($_SESSION['recommendations_timestamp'])) {
+            // Check if recommendations are still valid (less than 5 minutes old)
+            if (time() - $_SESSION['recommendations_timestamp'] < 300) {
+                echo json_encode(['ready' => true]);
+                exit;
+            }
         }
+        
+        echo json_encode(['ready' => false]);
         exit;
     }
 
